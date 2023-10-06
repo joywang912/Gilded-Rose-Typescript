@@ -36,6 +36,7 @@ describe("Gilded Rose", () => {
     const gildedRose = new GildedRose([
       new Item("Aged Brie", 10, 10),
       new Item("Aged Brie", 10, 50),
+      new Item("Aged Brie", 0, 10),
     ]);
     const items = gildedRose.updateQuality();
 
@@ -48,6 +49,11 @@ describe("Gilded Rose", () => {
       expect(items[1].sellIn).toEqual(9);
       expect(items[1].quality).toEqual(50);
     });
+
+    it("should increase 2 qualities per day after SellIn date", () => {
+      expect(items[2].sellIn).toEqual(-1);
+      expect(items[2].quality).toEqual(12);
+    });
   });
 
   describe("Backstage passes", () => {
@@ -55,6 +61,7 @@ describe("Gilded Rose", () => {
       new Item("Backstage passes to a TAFKAL80ETC concert", 10, 10),
       new Item("Backstage passes to a TAFKAL80ETC concert", 5, 20),
       new Item("Backstage passes to a TAFKAL80ETC concert", 0, 20),
+      new Item("Backstage passes to a TAFKAL80ETC concert", 20, 10),
     ]);
     const items = gildedRose.updateQuality();
 
@@ -71,6 +78,11 @@ describe("Gilded Rose", () => {
     it("Backstage passes Quality drops to 0 after SellIn date", () => {
       expect(items[2].sellIn).toEqual(-1);
       expect(items[2].quality).toEqual(0);
+    });
+
+    it("Backstage passes add 1 qualities if more than 10 SellIn days", () => {
+      expect(items[3].sellIn).toEqual(19);
+      expect(items[3].quality).toEqual(11);
     });
   });
 
