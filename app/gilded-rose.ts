@@ -25,35 +25,31 @@ export class GildedRose {
 
   decreaseQuality(item) {
     const isConjured = item.name.includes("Conjured");
-    if (item.quality > 0) {
-      if (item.sellIn < 0) {
-        item.quality -= isConjured ? 4 : 2;
-      } else {
-        item.quality -= isConjured ? 2 : 1;
-      }
-    }
+    const decreaseTimes = isConjured ? 2 : 1;
+    const numberToDecrease = item.sellIn < 0 ? 2 : 1;
+    const newItemQuality = item.quality - numberToDecrease * decreaseTimes;
+    item.quality = newItemQuality >= 0 ? newItemQuality : 0;
   }
 
   increaseQuality(item) {
-    if (item.quality < 50) {
-      item.quality++;
-      if (this.isBackstagePasses(item.name)) {
-        if (item.sellIn < 0) {
-          item.quality = 0;
-          return;
+    let newItemQuality = item.quality + 1;
+    if (this.isBackstagePasses(item.name)) {
+      if (item.sellIn < 0) {
+        newItemQuality = 0;
+      } else {
+        if (item.sellIn < 11 && newItemQuality < 50) {
+          newItemQuality++;
         }
-        if (item.sellIn < 11 && item.quality < 50) {
-          item.quality++;
+        if (item.sellIn < 6 && newItemQuality < 50) {
+          newItemQuality++;
         }
-        if (item.sellIn < 6 && item.quality < 50) {
-          item.quality++;
-        }
-      }
-
-      if (item.name === "Aged Brie" && item.sellIn < 0) {
-        item.quality++;
       }
     }
+
+    if (item.name === "Aged Brie" && item.sellIn < 0) {
+      newItemQuality++;
+    }
+    item.quality = newItemQuality <= 50 ? newItemQuality : 50;
   }
 
   updateQuality() {
