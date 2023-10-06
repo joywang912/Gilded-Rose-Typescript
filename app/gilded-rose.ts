@@ -17,16 +17,19 @@ export class GildedRose {
     this.items = items;
   }
 
+  isBackstagePasses = (name) => name.includes("Backstage passes");
+
   decreaseSellInDay(item) {
     item.sellIn--;
   }
 
   decreaseQuality(item) {
+    const isConjured = item.name.includes("Conjured");
     if (item.quality > 0) {
       if (item.sellIn < 0) {
-        item.quality -= 2;
+        item.quality -= isConjured ? 4 : 2;
       } else {
-        item.quality--;
+        item.quality -= isConjured ? 2 : 1;
       }
     }
   }
@@ -34,7 +37,7 @@ export class GildedRose {
   increaseQuality(item) {
     if (item.quality < 50) {
       item.quality++;
-      if (item.name === "Backstage passes to a TAFKAL80ETC concert") {
+      if (this.isBackstagePasses(item.name)) {
         if (item.sellIn < 0) {
           item.quality = 0;
           return;
@@ -60,9 +63,8 @@ export class GildedRose {
       }
       this.decreaseSellInDay(this.items[i]);
       if (
-        ["Aged Brie", "Backstage passes to a TAFKAL80ETC concert"].includes(
-          this.items[i].name
-        )
+        this.items[i].name === "Aged Brie" ||
+        this.isBackstagePasses(this.items[i].name)
       ) {
         this.increaseQuality(this.items[i]);
       } else {
